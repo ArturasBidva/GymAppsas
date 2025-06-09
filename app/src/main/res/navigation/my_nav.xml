@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/profileSetupFragment">
+
+    <fragment
+        android:id="@+id/mainScreenFragment"
+        android:name="com.example.gymappsas.ui.screens.mainscreen.MainScreenFragment"
+        android:label="MainScreen">
+        <action
+            android:id="@+id/action_mainScreenFragment_to_WorkoutsFragment"
+            app:destination="@id/workoutFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_ExerciseScreen"
+            app:destination="@id/exerciseFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_WorkoutSchedule"
+            app:destination="@id/workoutSchedule"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_chooseWorkoutFragment"
+            app:destination="@id/ChooseWorkoutFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_workoutHistoryFragment"
+            app:destination="@id/workoutHistory"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createExercise"
+        android:name="com.example.gymappsas.ui.screens.createexercise.CreateExerciseFragment"
+        android:label="CreateExercise">
+        <action
+            android:id="@+id/action_createExerciseFragment_to_uploadImageFragment"
+            app:destination="@id/uploadImage"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutHistory"
+        android:name="com.example.gymappsas.ui.screens.workouthistory.WorkoutHistoryFragment"
+        android:label="WorkoutHistory" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.gymappsas.ui.screens.profile.ProfileFragment"
+        android:label="ProfileFragment" />
+
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.example.gymappsas.ui.screens.camera.CameraFragment"
+        android:label="Camera" />
+
+    <fragment
+        android:id="@+id/exercisesBySelectedCategory"
+        android:name="com.example.gymappsas.ui.screens.exercisesbyselectedcategory.ExercisesBySelectedCategoryFragment"
+        android:label="ExercisesBySelectedCategory">
+        <argument
+            android:name="exerciseCategory"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_exercisesBySelectedCategoryFragment_to_ExerciseDetailsFragment"
+            app:destination="@id/exerciseDetails"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out">
+            <argument
+                android:name="exerciseId"
+                app:argType="long" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/WorkoutCreated"
+        android:name="com.example.gymappsas.ui.screens.workoutcreated.WorkoutCreatedFragment"
+        android:label="WorkoutCreatedFragment">
+        <argument
+            android:name="workoutId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/uploadImage"
+        android:name="com.example.gymappsas.ui.screens.uploadimage.UploadImageFragment"
+        android:label="UploadImageFragment">
+        <action
+            android:id="@+id/action_uploadImage_to_cameraFragment"
+            app:destination="@id/cameraFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/startWorkoutFragment"
+        android:name="com.example.gymappsas.ui.screens.startworkout.StartWorkoutFragment"
+        android:label="StartWorkoutFragment">
+        <argument
+            android:name="myArg"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutPreparationFragment"
+        android:name="com.example.gymappsas.ui.screens.workoutprep.WorkoutPreparationFragment"
+        android:label="WorkoutPreparationFragment">
+        <argument
+            android:name="workoutId"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addExerciseToWorkoutFragment"
+        android:name="com.example.gymappsas.ui.screens.addexercisetoworkout.AddExerciseToWorkoutFragment"
+        android:label="AddExerciseToWorkoutFragment">
+        <action
+            android:id="@+id/action_AddExerciseToWorkoutFragment_to_ExerciseDetailsFragment"
+            app:destination="@id/exerciseDetails"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out">
+            <argument
+                android:name="exerciseId"
+                app:argType="long" />
+        </action>
+        <action
+            android:id="@+id/action_AddExerciseToWorkoutFragment_to_WorkoutCreatedFragment"
+            app:destination="@id/WorkoutCreated"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out">
+            <argument
+                android:name="workoutId"
+                app:argType="long" />
+        </action>
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/onGoingWorkout"
+        android:name="com.example.gymappsas.ui.screens.ongoingworkout.OnGoingWorkoutFragment"
+        android:label="OnGoingWorkoutFragment">
+        <action
+            android:id="@+id/action_onGoingWorkoutFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"/>
+        <argument
+            android:name="workoutId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/ChooseWorkoutFragment"
+        android:name="com.example.gymappsas.ui.screens.chooseworkout.ChooseWorkoutFragment"
+        android:label="ChooseWorkoutFragment">
+        <action
+            android:id="@+id/action_chooseWorkoutFragment_to_workoutPreparationFragment"
+            app:destination="@id/workoutPreparationFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_chooseWorkoutFragment_to_onGoingWorkoutFragment"
+            app:destination="@id/onGoingWorkout"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out">
+            <argument
+                android:name="workoutId"
+                app:argType="long" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutFragment"
+        android:name="com.example.gymappsas.ui.screens.workout.WorkoutFragment"
+        android:label="Workout">
+        <action
+            android:id="@+id/action_workoutFragment_to_WorkoutCreateWorkoutFragment"
+            app:destination="@id/createWorkoutFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_workoutFragment_to_MainScreenFragment"
+            app:destination="@id/mainScreenFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_workoutFragment_to_ToProfileFragment"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_workoutFragment_to_WorkoutDetailsFragment"
+            app:destination="@id/workoutDetails"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out">
+            <argument
+                android:name="workoutId"
+                app:argType="long" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/exerciseFragment"
+        android:name="com.example.gymappsas.ui.screens.exercisesbycategory.ExerciseFragment"
+        android:label="ExerciseFragment">
+        <action
+            android:id="@+id/action_exerciseFragment_to_CreateExerciseFragment"
+            app:destination="@id/createExercise"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_exerciseFragment_to_ExerciseBySelectedCategoryFragment"
+            app:destination="@id/exercisesBySelectedCategory"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutDetails"
+        android:name="com.example.gymappsas.ui.screens.workout.WorkoutDetailsFragment"
+        android:label="WorkoutDetails">
+        <argument
+            android:name="workoutId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_workoutDetailsFragment_to_ExerciseDetailsFragment"
+            app:destination="@id/exerciseDetails"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out">
+            <argument
+                android:name="exerciseId"
+                app:argType="long" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutSchedule"
+        android:name="com.example.gymappsas.ui.screens.workoutschedule.WorkoutScheduleFragment"
+        android:label="WorkoutScheduleFragment" />
+
+    <fragment
+        android:id="@+id/exerciseDetails"
+        android:name="com.example.gymappsas.ui.screens.exercisedetails.ExerciseDetailsFragment"
+        android:label="ExerciseDetailsFragment">
+        <argument
+            android:name="categoryName"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="exerciseId"
+            app:argType="long" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/createWorkoutFragment"
+        android:name="com.example.gymappsas.ui.screens.createworkout.CreateWorkoutFragment"
+        android:label="CreateWorkout">
+        <action
+            android:id="@+id/action_createWorkoutFragment_to_WorkoutFragment"
+            app:destination="@id/workoutFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_createWorkoutFragment_to_AddExerciseToWorkoutFragment"
+            app:destination="@id/addExerciseToWorkoutFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_createWorkoutFragment_to_ExerciseFragment"
+            app:destination="@id/exerciseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileSetupFragment"
+        android:name="com.example.gymappsas.ui.screens.profilesetup.ProfileSetupFragment"
+        android:label="ProfileSetupFragment" />
+    <action
+        android:id="@+id/action_profileSetupFragment_to_MainScreenFragment"
+        app:destination="@id/mainScreenFragment" />
+
+</navigation>

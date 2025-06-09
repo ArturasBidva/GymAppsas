@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">GymAppsas</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="middlebutton">MiddleButton</string>
+    <string name="exercise_icon_desc">exercise Image</string>
+    <string name="profile">Profile</string>
+    <string name="profile_title">Profile</string>
+    <string name="profile_picture_desc">Profile picture</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="metric_workouts">Workouts</string>
+    <string name="metric_minutes">Minutes</string>
+    <string name="metric_calories">Calories</string>
+    <string name="settings_title">Settings</string>
+    <string name="navigate_icon_desc">Navigate</string>
+    <string name="logout">Logout</string>
+    <string name="confirm_logout">Confirm Logout</string>
+    <string name="logout_prompt">Are you sure you want to log out?</string>
+    <string name="cancel">Cancel</string>
+</resources>
