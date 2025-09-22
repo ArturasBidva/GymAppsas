@@ -1,7 +1,6 @@
 package com.example.gymappsas.data.repository.workout
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
-import com.example.gymappsas.data.db.entities.ExerciseWorkoutEntity
 import com.example.gymappsas.data.db.entities.WorkoutAndExerciseWorkoutCrossRef
 import com.example.gymappsas.data.db.entities.WorkoutEntity
 import com.example.gymappsas.data.db.entities.WorkoutWithExerciseWorkoutPair
@@ -12,16 +11,11 @@ class WorkoutRepository @Inject constructor(
     private val workoutDao: WorkoutDao
 ) {
 
-    suspend fun insertWorkouts(workouts: List<WorkoutEntity>) {
-        workoutDao.insertWorkouts(workouts = workouts)
-    }
-
     suspend fun deleteWorkoutById(workoutId: Long) {
         workoutDao.deleteWorkoutById(workoutId = workoutId)
     }
-
-    suspend fun insertExerciseWorkouts(exerciseWorkout: List<ExerciseWorkoutEntity>) {
-        workoutDao.insertExerciseWorkouts(exerciseWorkout)
+    suspend fun updateWorkout(workout: WorkoutEntity) {
+        workoutDao.updateWorkout(workout)
     }
 
 

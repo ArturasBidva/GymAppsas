@@ -13,6 +13,8 @@ object MockWorkoutHistory {
         name = "Bench Press",
         images = listOf(),
         instructions = listOf("gg","haha"),
+        equipment = "Barbell",
+        level = "Intermediate",
         primaryMuscles = listOf("Biceps")
     )
 
@@ -21,6 +23,8 @@ object MockWorkoutHistory {
         name = "Squats",
         images = listOf(),
         instructions = listOf("gg","haha"),
+        equipment = "Barbell",
+        level = "Beginner",
         primaryMuscles = listOf("Biceps")
     )
 
@@ -29,13 +33,15 @@ object MockWorkoutHistory {
         name = "Deadlift",
         images = listOf(),
         instructions = listOf("gg","haha"),
+        equipment = "Barbell",
+        level = "Advanced",
         primaryMuscles = listOf("Biceps")
     )
 
     private val mockExerciseWorkout1 = ExerciseWorkout(
         id = 1L,
         completedCount = 10,
-        weight = 80,
+        maxWeight = 80F,
         goal = 10,
         exercise = MockExerciseData.mockExercises[0]
     )
@@ -43,7 +49,7 @@ object MockWorkoutHistory {
     private val mockExerciseWorkout2 = ExerciseWorkout(
         id = 2L,
         completedCount = 12,
-        weight = 100,
+        maxWeight = 100F,
         goal = 12,
         exercise = MockExerciseData.mockExercises[2]
     )
@@ -51,7 +57,7 @@ object MockWorkoutHistory {
     private val mockExerciseWorkout3 = ExerciseWorkout(
         id = 3L,
         completedCount = 8,
-        weight = 120,
+        maxWeight = 120F,
         goal = 8,
         exercise = MockExerciseData.mockExercises[1]
     )

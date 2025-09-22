@@ -14,7 +14,11 @@ class ProfileEntity (
     val age: Int,
     val weeklyTrainingMinutes: Int,
     val joinDate: String,
-    val gender: Gender
+    val gender: Gender? = null,
+    val selectedTrainingDays: List<String> = emptyList(),
+    val selectedTrainingLevel: String? = null,
+    val selectedFitnessGoal: String? = null,
+    val bmi : Float
 ) {
     override fun toString(): String {
         return "com.example.gymappsas.data.db.entities.ProfileEntity(name=$name, weight=$weight, height=$height, age=$age, weeklyTrainingMinutes=$weeklyTrainingMinutes, joinDate=$joinDate)"

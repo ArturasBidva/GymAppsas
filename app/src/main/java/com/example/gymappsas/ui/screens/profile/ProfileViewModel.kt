@@ -22,25 +22,23 @@ class ProfileViewModel @Inject constructor(
     init {
         getProfile()
     }
+
     private fun getProfile() {
         viewModelScope.launch {
             profileService.getProfile().onStart {
                 _uiState.update { it.copy(isLoading = true) }
             }.collect { profile ->
-                if (profile != null){
+                if (profile != null) {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            username = profile.name,
-                            age = profile.age,
-                            weeklyWorkoutCount = profile.weeklyTrainingMinutes,
-                            gender = profile.gender,
-                            joinDate = profile.joinDate
+                            weeklyWorkoutCount = profile.workoutDays.size,
+                            profile = profile
 
                         )
                     }
                 }
-               }
             }
         }
     }
+}

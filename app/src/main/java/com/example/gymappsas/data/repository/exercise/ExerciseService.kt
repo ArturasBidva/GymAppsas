@@ -11,7 +11,9 @@ class ExerciseService @Inject constructor() {
         val id: String,
         val images: List<String>,
         val instructions: List<String>,
-        val primaryMuscles: List<String>
+        val primaryMuscles: List<String>,
+        val equipment: String,
+        val level: String
     )
 
 }

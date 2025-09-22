@@ -43,13 +43,6 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
-        <action
-            android:id="@+id/action_mainScreenFragment_to_profileFragment"
-            app:destination="@id/profileFragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -69,10 +62,6 @@
         android:id="@+id/workoutHistory"
         android:name="com.example.gymappsas.ui.screens.workouthistory.WorkoutHistoryFragment"
         android:label="WorkoutHistory" />
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.gymappsas.ui.screens.profile.ProfileFragment"
-        android:label="ProfileFragment" />
 
     <fragment
         android:id="@+id/cameraFragment"
@@ -221,13 +210,6 @@
         <action
             android:id="@+id/action_workoutFragment_to_MainScreenFragment"
             app:destination="@id/mainScreenFragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
-        <action
-            android:id="@+id/action_workoutFragment_to_ToProfileFragment"
-            app:destination="@id/profileFragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"

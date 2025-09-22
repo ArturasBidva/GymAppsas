@@ -24,6 +24,7 @@ class ExerciseViewModel @Inject constructor(
     init {
         getExerciseCategories()
         getExercises()
+        getRecentlyViewedExercises()
     }
 
     private fun getExerciseCategories() {
@@ -37,6 +38,25 @@ class ExerciseViewModel @Inject constructor(
             ExerciseCategory.Glutes, ExerciseCategory.Quadriceps,
             ExerciseCategory.Shoulders, ExerciseCategory.Triceps, ExerciseCategory.Chest
         )
+    }
+
+    private fun getRecentlyViewedExercises() {
+        viewModelScope.launch {
+            exerciseRepository.recentlyViewedExercises.collect { recentList ->
+                _uiState.update { it.copy(recentViewedExercises = recentList) }
+            }
+        }
+    }
+
+    fun clearRecentlyViewed() {
+        viewModelScope.launch {
+            exerciseRepository.clearRecentlyViewedExercises()
+            _uiState.update { it.copy(recentViewedExercises = emptyList()) }
+        }
+    }
+
+    fun isExpanded(expanded: Boolean) {
+        viewModelScope.launch { _uiState.update { it.copy(isExpanded = expanded) } }
     }
 
     private fun getExercises() {

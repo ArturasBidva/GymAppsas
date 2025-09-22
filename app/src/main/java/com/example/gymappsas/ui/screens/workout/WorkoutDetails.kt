@@ -31,7 +31,7 @@ import coil3.compose.rememberAsyncImagePainter
 import com.example.gymappsas.data.db.models.workouts.Workout
 import com.example.gymappsas.ui.reusable.lexenBold
 import com.example.gymappsas.ui.reusable.notosands
-import com.example.gymappsas.ui.screens.exercisesbyselectedcategory.ExerciseItem
+import com.example.gymappsas.ui.screens.exercisesbyselectedcategory.ExerciseCard
 import com.example.gymappsas.util.GetImagePath
 import com.example.gymappsas.util.MockWorkoutData
 
@@ -48,7 +48,7 @@ fun WorkoutDetailsScreen(
             workout = workout,
             navigateToExerciseDetails = { navigateToExerciseDetails(it) },
             onNavigateBackClick = onNavigateBackClick,
-            onDeleteWorkoutClick = {onDeleteWorkoutClick(it)}
+            onDeleteWorkoutClick = { onDeleteWorkoutClick(it) }
         )
     }
 }
@@ -77,10 +77,10 @@ private fun Content(
                 ) {
                     BannerSection(
                         imageUrl =
-                        GetImagePath.getExerciseImagePath(
-                            category = workout.exerciseWorkouts.first().exercise.primaryMuscles.first(),
-                            exerciseName = workout.exerciseWorkouts.first().exercise.name
-                        )
+                            GetImagePath.getExerciseImagePath(
+                                category = workout.exerciseWorkouts.first().exercise.primaryMuscles.first(),
+                                exerciseName = workout.exerciseWorkouts.first().exercise.name
+                            )
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
@@ -108,10 +108,9 @@ private fun Content(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                     workout.exerciseWorkouts.forEach { exerciseWorkout ->
-                        ExerciseItem(
+                        ExerciseCard(
                             exercise = exerciseWorkout.exercise,
-                            onDeleteClick = {},
-                            onSelectExerciseClick = { navigateToExerciseDetails(exerciseWorkout.exercise.id) }
+                            onClick = { }
                         )
                     }
                 }
@@ -122,7 +121,7 @@ private fun Content(
                         .padding(16.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(Color(0xFFF0F2F5))
-                        .clickable { onDeleteWorkoutClick(workout.id)},
+                        .clickable { onDeleteWorkoutClick(workout.id) },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(

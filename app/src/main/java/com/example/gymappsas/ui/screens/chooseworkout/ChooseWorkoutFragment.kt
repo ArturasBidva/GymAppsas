@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 
 
@@ -24,8 +23,7 @@ class ChooseWorkoutFragment : Fragment() {
                     viewModel = chooseWorkoutViewModel,
                     onStartClick = { workoutId ->
                         handleNavigation(workoutId)
-                    },
-                    onBackClick = { findNavController().popBackStack() }
+                    }
                 )
             }
         }

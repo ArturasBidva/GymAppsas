@@ -233,4 +233,10 @@ class OnGoingWorkoutViewModel @Inject constructor(
         }
     }
 
+    fun toggleExpanded(expanded: Boolean) {
+        _uiState.update {
+            it.copy(isExpanded = expanded)
+        }
+    }
+
 }

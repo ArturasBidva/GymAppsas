@@ -9,6 +9,8 @@ object MockExerciseData {
             name = "Wide-Grip Barbell Bench Press",
             images = listOf("Wide-Grip_Barbell_Bench_Press/0.jpg", "Wide-Grip_Barbell_Bench_Press/1.jpg"),
             instructions = listOf("gg","haha"),
+            level = "Intermediate",
+            equipment = "Barbell",
             primaryMuscles = listOf(("Chest"))
         ),
         Exercise(
@@ -16,6 +18,8 @@ object MockExerciseData {
             name = "Leg Extensions",
             images = listOf("Leg_Extensions/0.jpg", "Leg_Extensions/1.jpg"),
             instructions = listOf("gg","haha"),
+            level = "Beginner",
+            equipment = "Leg Extension Machine",
             primaryMuscles = listOf(("Quadriceps"))
         ),
         Exercise(
@@ -23,6 +27,8 @@ object MockExerciseData {
             name = "Triceps Pushdown - V-Bar Attachment",
             images = listOf("Triceps_Pushdown_V-Bar_Attachment/0.jpg", "Triceps_Pushdown_V-Bar_Attachment/1.jpg"),
             instructions = listOf("gg","haha"),
+            level = "Beginner",
+            equipment = "Cable Machine",
             primaryMuscles = listOf(("Triceps"))
         ),
         Exercise(
@@ -30,6 +36,8 @@ object MockExerciseData {
             name = "Incline Inner Biceps Curl",
             images = listOf("Incline_Inner_Biceps_Curl/0.jpg", "Incline_Inner_Biceps_Curl/1.jpg"),
             instructions = listOf("gg","haha"),
+            level = "Intermediate",
+            equipment = "Dumbbells",
             primaryMuscles = listOf(("Biceps"))
         ),
         Exercise(
@@ -37,6 +45,8 @@ object MockExerciseData {
             name = "Butt-Ups",
             images = listOf("Butt-Ups/0.jpg", "Butt-Ups/1.jpg"),
             instructions = listOf("gg","haha"),
+            level = "Beginner",
+            equipment = "None",
             primaryMuscles = listOf(("Abdominals"))
         )
     )

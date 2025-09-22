@@ -1,16 +1,13 @@
 package com.example.gymappsas.ui.screens.profile
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.gymappsas.ui.screens.profilesetup.Gender
+import com.example.gymappsas.data.db.models.profile.Profile
 
 data class ProfileUiState(
+    val profile : Profile? = null,
     val isLoading: Boolean = true,
-    val username : String = "",
     val profilePictureUrl: String? = null,
-    val gender: Gender = Gender.NONE,
-    val age: Int? = null,
     val weeklyWorkoutCount: Int? = null,
-    val joinDate: String? = null,
     val settingsOptions: List<SettingsOption> = emptyList()
 )
 

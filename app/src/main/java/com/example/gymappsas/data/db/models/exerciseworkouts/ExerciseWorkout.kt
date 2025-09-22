@@ -9,9 +9,10 @@ import kotlinx.parcelize.Parcelize
 data class ExerciseWorkout(
     val id: Long = 0,
     var completedCount: Int = 0,
-    val weight: Int = 0,
+    val maxWeight: Float = 0F,
     val goal: Int = 4,
     val duration: Long = 60L * 1000,
     val breakTime: Long = 60L * 1000,
-    val exercise: Exercise = MockExerciseData.mockExercises[0]
+    val exercise: Exercise = MockExerciseData.mockExercises[0],
+    val weights : List<Float> = emptyList()
 ):Parcelable

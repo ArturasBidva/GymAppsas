@@ -15,6 +15,7 @@ interface CompletedWorkoutDao {
     @Query("SELECT * FROM completed_workouts")
     fun getCompletedWorkouts(): Flow<List<CompletedWorkoutEntity>>
 
-
-
+    @Transaction
+    @Query("SELECT * FROM completed_workouts WHERE workoutId = :workoutId ORDER BY completedDate DESC")
+    fun getCompletedWorkoutsByWorkoutId(workoutId: Long): Flow<List<CompletedWorkoutEntity>>
 }

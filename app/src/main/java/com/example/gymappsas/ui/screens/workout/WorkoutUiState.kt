@@ -2,6 +2,7 @@ package com.example.gymappsas.ui.screens.workout
 
 import com.example.gymappsas.data.db.models.exercises.Exercise
 import com.example.gymappsas.data.db.models.exerciseworkouts.ExerciseWorkout
+import com.example.gymappsas.data.db.models.profile.Profile
 import com.example.gymappsas.data.db.models.workouts.Workout
 import com.example.gymappsas.util.UiText
 
@@ -19,6 +20,6 @@ data class WorkoutUiState(
     var exercises : List<Exercise> = listOf(),
     val isSearching : Boolean = false,
     val searchText : String = "",
-    val filteredWorkouts : List<Workout> = listOf()
+    val filteredWorkouts : List<Workout> = listOf(),
+    val profile: Profile? = null,
 )
-

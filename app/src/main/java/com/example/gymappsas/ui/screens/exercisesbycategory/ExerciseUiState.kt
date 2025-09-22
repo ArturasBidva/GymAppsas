@@ -13,5 +13,6 @@ data class ExerciseUiState(
     val selectedExercise: Exercise? = null,
     val uiText: UiText? = null,
     val isError: Boolean = false,
-    val selectionExpanded: Boolean = false,
+    val isExpanded: Boolean = false,
+    val recentViewedExercises: List<Exercise> = emptyList()
 )

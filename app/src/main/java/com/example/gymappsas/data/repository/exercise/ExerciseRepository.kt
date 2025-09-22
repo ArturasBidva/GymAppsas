@@ -16,13 +16,13 @@ import javax.inject.Singleton
 @Singleton
 class ExerciseRepository @Inject constructor(
     private val context: Context,
-    private val exerciseDao: ExerciseDao
+    private val exerciseDao: ExerciseDao,
 ) {
 
     private val _exercises = MutableStateFlow<List<Exercise>>(listOf())
     val exercises = _exercises.asStateFlow()
 
-    suspend fun loadExercisesToStateFlow () {
+    suspend fun loadExercisesToStateFlow() {
         val gson = Gson()
         val mainDir = "exercisesbycategories"
         val filesToScan = mutableListOf<String>()
@@ -39,7 +39,6 @@ class ExerciseRepository @Inject constructor(
                 }
             }
         }
-
         // Start scanning from the main directory
         scanDirectory(mainDir)
 
@@ -55,8 +54,11 @@ class ExerciseRepository @Inject constructor(
                         name = exerciseJson.name,
                         images = exerciseJson.images,
                         instructions = exerciseJson.instructions,
-                        primaryMuscles = listOf(exerciseJson.primaryMuscles.first()))
-                    exerciseDao.insertExercise(exerciseEntity = exercise.ToExerciseEntity())
+                        equipment = exerciseJson.equipment,
+                        primaryMuscles = listOf(exerciseJson.primaryMuscles.first()),
+                        level = exerciseJson.level
+                    )
+                    exerciseDao.insertExercise(exerciseEntity = exercise.toExerciseEntity())
                     exercises.add(exercise)
                 }
             } catch (e: Exception) {
@@ -68,8 +70,22 @@ class ExerciseRepository @Inject constructor(
             exercises
         }
     }
+    private val _recentlyViewedExercises = MutableStateFlow<List<Exercise>>(listOf())
+    val recentlyViewedExercises = _recentlyViewedExercises.asStateFlow()
 
-    fun Exercise.ToExerciseEntity() : ExerciseEntity{
+    fun addToRecentlyViewed(exercise: Exercise) {
+        val currentList = _recentlyViewedExercises.value.toMutableList()
+        currentList.removeAll { it.id == exercise.id }
+        currentList.add(0, exercise)
+        if (currentList.size > 10) currentList.removeAt(currentList.lastIndex)
+        _recentlyViewedExercises.value = currentList
+    }
+
+    fun clearRecentlyViewedExercises()  {
+        _recentlyViewedExercises.value = emptyList()
+    }
+
+    private fun Exercise.toExerciseEntity(): ExerciseEntity {
         return ExerciseEntity(id = this.id)
     }
 

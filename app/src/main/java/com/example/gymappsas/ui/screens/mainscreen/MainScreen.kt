@@ -1,12 +1,13 @@
 package com.example.gymappsas.ui.screens.mainscreen
 
-import BaseScreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,351 +16,589 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
+import com.example.gymappsas.BottomNavigationBar
 import com.example.gymappsas.R
 import com.example.gymappsas.data.db.models.profile.Profile
-import com.example.gymappsas.ui.reusable.montserrati
-import com.example.gymappsas.util.MockProfileData
+import com.example.gymappsas.data.repository.fitness.FitnessData
+import com.example.gymappsas.ui.screens.profilesetup.FitnessLevel
 
 @Composable
 fun MainScreen(
     mainScreenViewModel: MainViewModel = hiltViewModel(),
-    navigateToWorkout: () -> Unit,
-    navigateToExercise: () -> Unit,
-    navigateToWorkoutSchedule: () -> Unit,
-    navigateToChooseWorkout: () -> Unit,
-    navigateToWorkoutHistory: () -> Unit
+    navigateToWorkoutScreen: () -> Unit
 ) {
     val uiState by mainScreenViewModel.uiState.collectAsState(MainScreenUiState())
 
     Content(
-        onWorkoutNavigateClick = navigateToWorkout,
-        onExerciseNavigateClick = navigateToExercise,
-        onWorkoutScheduleClick = navigateToWorkoutSchedule,
-        onChooseWorkoutClick = navigateToChooseWorkout,
-        completedWorkoutCount = uiState.completedWorkoutsWeeklyCounter,
-        navigateToWorkoutHistory = navigateToWorkoutHistory,
-        profile = uiState.profile
+        profile = uiState.profile,
+        fitnessData = uiState.todayFitnessData,
+        isWorkoutToday = mainScreenViewModel.ifYouHaveWorkoutToday(),
+        ifYouHaveWorkouts = mainScreenViewModel.ifYouHaveWorkouts(),
+        navigateToWorkoutScreen = {navigateToWorkoutScreen()}
     )
 }
 
-
 @Composable
 private fun Content(
-    onWorkoutNavigateClick: () -> Unit,
-    onExerciseNavigateClick: () -> Unit,
-    onWorkoutScheduleClick: () -> Unit,
-    onChooseWorkoutClick: () -> Unit,
-    navigateToWorkoutHistory: () -> Unit,
-    completedWorkoutCount: Int,
-    profile: Profile
+    profile: Profile,
+    fitnessData: FitnessData? = null,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    isWorkoutToday: Boolean,
+    hasRecentActivity: Boolean = true,
+    ifYouHaveWorkouts: Boolean = false,
+    navigateToWorkoutScreen : () -> Unit = {}
 ) {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF7FAFC))
+            .padding(contentPadding)
+    ) {
         Column(
-            Modifier
-                .fillMaxWidth()
+            modifier = Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(50.dp))
+
             Text(
-                text = "Welcome ${profile.name},",
-                fontFamily = montserrati,
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(horizontal = 43.dp)
+                text = "Hello, ${profile.name}!",
+                style = androidx.compose.ui.text.TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
             )
-            Column(modifier = Modifier.padding(horizontal = 43.dp)) {
-                Spacer(modifier = Modifier.padding(10.dp))
-                Box(
-                    Modifier
-                        .shadow(
-                            elevation = 10.dp,
-                            shape = RoundedCornerShape(10.dp),
-                            spotColor = MaterialTheme.colorScheme.outline
-                        )
-                        .height(90.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    ) {
-                        Text(
-                            text = "This week you've done $completedWorkoutCount Workouts!",
-                            fontSize = 24.sp,
-                            fontFamily = montserrati,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.padding(12.dp))
+            Text(
+                "Let's crush your fitness goals today",
+                color = Color.Gray
+            )
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Stats Grid - Updated to use real fitness data
+            Column {
                 Row(
-                    Modifier
+                    modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Box(
-                        Modifier
-                            .shadow(
-                                elevation = 10.dp,
-                                shape = RoundedCornerShape(10.dp),
-                                spotColor = MaterialTheme.colorScheme.outline
-                            )
-                            .weight(1f)
-                            .height(90.dp)
-                            .clickable { onWorkoutNavigateClick() }
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.primaryContainer),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            val avatar = painterResource(R.drawable.ion_fitness_sharp)
-                            Image(
-                                painter = avatar,
-                                contentDescription = "Hearth",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimaryContainer)
-                            )
-                            Text(
-                                text = "Your workouts",
-                                fontFamily = montserrati,
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-                    }
-                    Spacer(Modifier.width(10.dp))
-                    Box(
-                        modifier = Modifier
-                            .shadow(
-                                elevation = 10.dp,
-                                shape = RoundedCornerShape(10.dp),
-                                spotColor = MaterialTheme.colorScheme.outline
-                            )
-                            .weight(1f)
-                            .height(90.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
-                            .clickable { navigateToWorkoutHistory() },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            val avatar = painterResource(R.drawable.vector)
-                            Image(
-                                painter = avatar,
-                                contentDescription = "History",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondaryContainer)
-                            )
-                            Text(
-                                text = "Workout history",
-                                fontFamily = montserrati,
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        }
-                    }
+                    DashboardCard(
+                        modifier = Modifier.weight(1f),
+                        iconRes = R.drawable.progress_trend_icon,
+                        iconColor = Color(0xFF2563EB),
+                        title = "Steps Today",
+                        value = "${fitnessData?.steps ?: 0}",
+                        subtext = "steps taken",
+                        backgroundColor = Color(0xFFEFF6FF),
+                    )
+                    DashboardCard(
+                        modifier = Modifier.weight(1f),
+                        iconRes = R.drawable.fire_calories_icon,
+                        iconColor = Color(0xFFF97316),
+                        title = "Calories",
+                        value = "${fitnessData?.calories?.toInt() ?: 520}",
+                        subtext = "burned today",
+                        backgroundColor = Color(0xFFFFF7ED),
+                    )
                 }
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Row(
-                    Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .shadow(
-                                elevation = 10.dp,
-                                shape = RoundedCornerShape(10.dp),
-                                spotColor = MaterialTheme.colorScheme.outline
-                            )
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .height(90.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.tertiaryContainer)
-                            .clickable { /* Handle click */ },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            val avatar = Icons.Outlined.Clear
-                            Image(
-                                imageVector = avatar,
-                                contentDescription = "Library",
-                                modifier = Modifier.size(43.dp),
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onTertiaryContainer)
-                            )
-                            Text(
-                                text = "Workouts library",
-                                fontFamily = montserrati,
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onTertiaryContainer
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Box(
-                        modifier = Modifier
-                            .shadow(
-                                elevation = 10.dp,
-                                shape = RoundedCornerShape(10.dp),
-                                spotColor = MaterialTheme.colorScheme.outline
-                            )
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .height(90.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.errorContainer)
-                            .clickable { onExerciseNavigateClick() },
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            val avatar = painterResource(R.drawable.exercisegym)
-                            Image(
-                                painter = avatar,
-                                contentDescription = "Exercises",
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onErrorContainer)
-                            )
-                            Text(
-                                text = "Exercises",
-                                fontFamily = montserrati,
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onErrorContainer
-                            )
-                        }
-                    }
+                    DashboardCard(
+                        modifier = Modifier.weight(1f),
+                        iconRes = R.drawable.calendar_streak_icon,
+                        iconColor = Color(0xFF22C55E),
+                        title = "Distance",
+                        value = "${String.format("%.1f", fitnessData?.distance ?: 0f)} km",
+                        subtext = "traveled today",
+                        backgroundColor = Color(0xFFF0FDF4),
+                    )
+                    DashboardCard(
+                        modifier = Modifier.weight(1f),
+                        iconRes = R.drawable.level_award_icon,
+                        iconColor = Color(0xFFA855F7),
+                        title = "Level",
+                        value = profile.fitnessLevel?.displayName ?: "Unknown",
+                        subtext = "Active: ${fitnessData?.activeMinutes ?: 0} min",
+                        backgroundColor = Color(0xFFFAF5FF),
+                    )
                 }
-                Spacer(modifier = Modifier.height(20.dp))
-                Box(
-                    Modifier
-                        .shadow(
-                            elevation = 10.dp,
-                            shape = RoundedCornerShape(10.dp),
-                            spotColor = MaterialTheme.colorScheme.outline
-                        )
-                        .height(90.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.inversePrimary),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .clickable { onWorkoutScheduleClick() }
-                    ) {
-                        Row {
-                            Icon(
-                                imageVector = Icons.Outlined.DateRange,
-                                contentDescription = "Calendar icon",
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                modifier = Modifier.size(47.dp)
-                            )
-                            Spacer(modifier = Modifier.width(14.dp))
-                            Box(
-                                Modifier
-                                    .height(46.dp)
-                            ) {
-                                Text(
-                                    text = "Make your workout schedule",
-                                    fontSize = 16.sp,
-                                    fontFamily = montserrati,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                            }
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.padding(vertical = 12.dp))
-                Box(
-                    Modifier
-                        .shadow(
-                            elevation = 10.dp,
-                            shape = RoundedCornerShape(10.dp),
-                            spotColor = MaterialTheme.colorScheme.outline
-                        )
-                        .height(70.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.secondary)
-                        .clickable { onChooseWorkoutClick() },
-                ) {
-                    Row(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        val avatar = painterResource(R.drawable.barbell)
-                        Icon(
-                            painter = avatar,
-                            contentDescription = "Barbell",
-                            tint = MaterialTheme.colorScheme.onSecondary
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Box(
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Column {
-                                Text(
-                                    text = "Ready for workout?",
-                                    fontSize = 14.sp,
-                                    fontFamily = montserrati,
-                                    color = MaterialTheme.colorScheme.onSecondary
-                                )
-                                Text(
-                                    text = "Click here to choose and start your daily workout!",
-                                    fontSize = 10.sp,
-                                    fontFamily = montserrati,
-                                    lineHeight = 12.sp,
-                                    color = MaterialTheme.colorScheme.onSecondary
-                                )
-                            }
-                        }
-                    }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            SectionHeader(title = "Today's Plan", actionText = "View All")
+            if (isWorkoutToday) {
+                WorkoutItemCard(
+                    title = "Upper Body Strength",
+                    duration = "45 min",
+                    description = "Focus on chest, shoulders and triceps",
+                    buttonColor = Color(0xFF3B82F6),
+                    textColor = Color.White
+                )
+            } else if (ifYouHaveWorkouts) {
+                NoWorkoutTodayCard(scheduledDays = profile.workoutDays)
+            } else {
+                PlanYourFitnessJourneyCard()
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Recent Activity
+            SectionHeader(title = "Recent Activity", actionText = "See All")
+
+            if (hasRecentActivity) {
+                ActivityItem(
+                    iconRes = R.drawable.workouts_icon_2,
+                    iconBackground = Color(0xFFEFF6FF),
+                    title = "Leg Day Workout",
+                    time = "Yesterday, 6:30 PM",
+                    duration = "35 min"
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                ActivityItem(
+                    iconRes = R.drawable.calendar_streak_icon,
+                    iconBackground = Color(0xFFF0FDF4),
+                    title = "Morning Run",
+                    time = "Yesterday, 7:15 AM",
+                    duration = "22 min"
+                )
+            } else {
+                NoRecentActivityCard(onStartWorkoutClick = { navigateToWorkoutScreen() })
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+fun PlanYourFitnessJourneyCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFEFF6FF)),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp, horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Illustration
+            Image(
+                painter = painterResource(id = R.drawable.fitness_journey),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(140.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Title
+            Text(
+                text = "Plan Your Fitness Journey",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                color = Color(0xFF111827)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Subtitle
+            Text(
+                text = "Add workouts to your calendar to stay consistent and track your progress.",
+                fontSize = 14.sp,
+                color = Color(0xFF374151),
+                lineHeight = 20.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Primary button
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF2563EB), RoundedCornerShape(8.dp))
+                    .clickable { /* TODO: open calendar */ }
+                    .padding(vertical = 12.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "Add Workout to Calendar",
+                        color = Color.White,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
                 }
             }
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun MainScreenPrev() {
-    BaseScreen(
-        isLoading = false, topBarTitle = "Home",
-        content = {
-            Content(
-                onWorkoutNavigateClick = { /*TODO*/ },
-                onExerciseNavigateClick = {},
-                onWorkoutScheduleClick = {},
-                onChooseWorkoutClick = {},
-                completedWorkoutCount = 10,
-                navigateToWorkoutHistory = {},
-                profile = MockProfileData.mockProfile,
+fun MainScreenWithBottomBarPreview() {
+    val navController = rememberNavController()
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                onInformationClick = {}
             )
         }
-    )
+    ) { contentPadding ->
+        Content(
+            profile = Profile(
+                name = "Arturas",
+                workoutDays = listOf("Monday", "Wednesday"),
+                fitnessLevel = FitnessLevel.EXPERT,
+                bmi = 0.5f
+            ),
+            fitnessData = FitnessData(
+                steps = 5420,
+                calories = 520f,
+                distance = 3.2f,
+                activeMinutes = 45,
+                heartRate = 72,
+                date = "2025-01-29"
+            ),
+            contentPadding = contentPadding,
+            isWorkoutToday = false,
+            hasRecentActivity = false,
+            ifYouHaveWorkouts = false
+        )
+    }
 }
 
+@Composable
+fun DashboardCard(
+    modifier: Modifier = Modifier,
+    iconRes: Int,
+    iconColor: Color,
+    title: String,
+    value: String,
+    subtext: String,
+    backgroundColor: Color
+) {
+    Column(
+        modifier = modifier
+            .background(backgroundColor, RoundedCornerShape(12.dp))
+            .padding(10.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                painter = painterResource(id = iconRes),
+                contentDescription = title,
+                tint = iconColor,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                title,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+        }
+        Text(
+            value,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
+        Text(
+            subtext,
+            fontSize = 12.sp,
+            color = Color.Gray
+        )
+    }
+}
 
+@Composable
+fun SectionHeader(title: String, actionText: String) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(
+            title,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = Color.Black
+        )
+        Text(
+            actionText,
+            color = Color(0xFF3B82F6),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+}
 
+@Composable
+fun ActivityItem(
+    iconRes: Int,
+    iconBackground: Color,
+    title: String,
+    time: String,
+    duration: String
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xFFF3F4F6), RoundedCornerShape(12.dp))
+            .border(1.dp, Color(0xFFF3F4F6), RoundedCornerShape(12.dp))
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .background(iconBackground, RoundedCornerShape(8.dp))
+                .padding(8.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = iconRes),
+                contentDescription = title,
+                tint = Color.Black,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                title,
+                fontWeight = FontWeight.Medium,
+                color = Color.Black
+            )
+            Text(
+                time,
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
+        }
+        Text(
+            duration,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.Gray
+        )
+    }
+}
+
+@Composable
+fun WorkoutItemCard(
+    title: String,
+    duration: String,
+    description: String,
+    buttonColor: Color,
+    textColor: Color
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column {
+            // Workout Image
+            Image(
+                painter = painterResource(id = R.drawable.workouts_icon_2),
+                contentDescription = title,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+            )
+
+            // Content
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        title,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        duration,
+                        fontSize = 12.sp,
+                        color = Color(0xFF3B82F6),
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier
+                            .background(
+                                Color(0xFFEFF6FF),
+                                RoundedCornerShape(12.dp)
+                            )
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    description,
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    lineHeight = 20.sp
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(buttonColor, RoundedCornerShape(8.dp))
+                        .clickable { /* TODO: navigate to workout details */ }
+                        .padding(vertical = 12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "Show Workout",
+                        color = textColor,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun NoWorkoutTodayCard(
+    modifier: Modifier = Modifier,
+    scheduledDays: List<String> = emptyList()
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(1.dp, Color(0xFFFFF7E6), RoundedCornerShape(12.dp)),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFFEF3C7)   // ← #FEF3C7
+        ),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Icon(
+                painter = painterResource(id = R.drawable.calendericon),
+                contentDescription = null,
+                tint = Color(0xFFC7A364),
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.Top)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(Modifier.weight(1f)) {
+                Text("Rest Day", fontWeight = FontWeight.Bold, color = Color(0xFF111827))
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    "Today is not in your selected workout schedule. Consider light activity or recovery.",
+                    fontSize = 14.sp,
+                    color = Color(0xFF374151)
+                )
+                Spacer(Modifier.height(12.dp))
+                if (scheduledDays.isNotEmpty()) {
+                    Text(
+                        "Your workout days: ${scheduledDays.joinToString()}",
+                        fontSize = 12.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun NoRecentActivityCard(onStartWorkoutClick: () -> Unit = {}) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White, RoundedCornerShape(12.dp))
+            .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.clock),
+            contentDescription = null,
+            modifier = Modifier.size(120.dp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "No Recent Activity",
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF111827)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "You haven't logged any workouts yet. Start",
+            fontSize = 14.sp,
+            color = Color(0xFF374151),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        Text(
+            text = "your fitness journey today!",
+            fontSize = 14.sp,
+            color = Color(0xFF374151),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Box(
+            modifier = Modifier
+                .background(Color(0xFF2563EB), RoundedCornerShape(8.dp))
+                .padding(horizontal = 24.dp, vertical = 12.dp)
+                .clickable { onStartWorkoutClick() },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Start Your First Workout",
+                color = Color.White,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}

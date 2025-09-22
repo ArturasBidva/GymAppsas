@@ -1,12 +1,12 @@
 package com.example.gymappsas.data.db.models.timer
 
-sealed class TimerEvent {
-    object EXERCISE : TimerEvent()
-    object BREAK : TimerEvent()
-    object FINISH : TimerEvent()
-    object PAUSED : TimerEvent()
-    object RESUMED : TimerEvent()
-    object FORWARD : TimerEvent()
-    object BACKWARD : TimerEvent()
-    object DEFAULT : TimerEvent()
+sealed class TimerEvent(val name: String) {
+    object EXERCISE : TimerEvent("EXERCISE")
+    object BREAK : TimerEvent("BREAK")
+    object FINISH : TimerEvent("FINISH")
+    object PAUSED : TimerEvent("PAUSED")
+    object RESUMED : TimerEvent("RESUMED")
+    object FORWARD : TimerEvent("FORWARD")
+    object BACKWARD : TimerEvent("BACKWARD")
+    object DEFAULT : TimerEvent("DEFAULT")
 }

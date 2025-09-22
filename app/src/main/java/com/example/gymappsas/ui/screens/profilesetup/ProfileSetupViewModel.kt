@@ -1,18 +1,12 @@
 package com.example.gymappsas.ui.screens.profilesetup
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gymappsas.data.db.models.profile.Profile
 import com.example.gymappsas.data.repository.profile.ProfileService
-import com.example.gymappsas.util.PickerType
 import com.example.gymappsas.util.ValidationResult
 import com.example.gymappsas.util.Validator
 import com.example.gymappsas.util.Validator.validateMetric
-import com.example.gymappsas.util.ageOptions
-import com.example.gymappsas.util.heightOptions
-import com.example.gymappsas.util.weightOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,11 +33,8 @@ class ProfileSetupViewModel @Inject constructor(private val profileService: Prof
     private val _uiState = MutableStateFlow(ProfileRegistrationUiState())
     val uiState: StateFlow<ProfileRegistrationUiState> = _uiState
 
-    private val _showPicker = mutableStateOf(PickerType.NONE)
-    val showPicker: State<PickerType> = _showPicker
-
     private fun navigateToGenderStep() {
-        _uiState.update { it.copy(profileSetupStep = ProfileSetupStep.GENDER) }
+        _uiState.update { it.copy(profileSetupStep = ProfileSetupStep.METRICS, currentStep = 2) }
     }
 
     private fun checkUserExistence() {
@@ -57,62 +48,66 @@ class ProfileSetupViewModel @Inject constructor(private val profileService: Prof
         }
     }
 
-
-    fun onNameChanged(name: String) {
-        _uiState.value = _uiState.value.copy(name = name)
-        if (uiState.value.hasUserAttemptedSubmission) {
-            validateNameStep()
-        }
-    }
-
     fun onGenderChanged(gender: Gender) {
         _uiState.update {
             it.copy(gender = gender)
         }
     }
 
-    fun getPickerOptions(type: PickerType): List<String> {
-        return when (type) {
-            PickerType.AGE -> ageOptions
-            PickerType.WEIGHT -> weightOptions
-            PickerType.HEIGHT -> heightOptions
-            else -> emptyList()
-        }
-    }
-
-    private fun validateNameStep() {
-        val result = validateMetric(Validator.ValidationType.NAME, uiState.value.name)
-        _uiState.update {
-            it.copy(
-                hasUserAttemptedSubmission = true,
-                nameError = when (result) {
-                    is ValidationResult.Invalid -> result.message
-                    else -> null
-                }
-            )
-        }
-
-    }
 
     fun onMetricChanged(type: Validator.ValidationType, value: String) {
+        // First update the specific field that changed
+        _uiState.update { state ->
+            val updatedMetrics = when (type) {
+                Validator.ValidationType.AGE -> state.metricsUiState.copy(age = value)
+                Validator.ValidationType.WEIGHT -> state.metricsUiState.copy(weight = value)
+                Validator.ValidationType.HEIGHT -> state.metricsUiState.copy(height = value)
+                Validator.ValidationType.NAME -> state.metricsUiState.copy(name = value)
+                else -> state.metricsUiState
+            }
+
+            val w = updatedMetrics.weight.toFloatOrNull()
+            val h = updatedMetrics.height.toFloatOrNull()
+            val bmi = if (w != null && h != null && w > 0 && h > 0) {
+                w / ((h / 100f) * (h / 100f))
+            } else null
+
+            state.copy(metricsUiState = updatedMetrics.copy(bmi = bmi?.toString()))
+        }
+
+        // Validate only the field that changed
+        validateSpecificMetric(type, value)
+    }
+
+    private fun validateSpecificMetric(type: Validator.ValidationType, value: String) {
+        val result = validateMetric(type, value)
+
         _uiState.update { currentState ->
             currentState.copy(
                 metricsUiState = when (type) {
-                    Validator.ValidationType.AGE -> currentState.metricsUiState.copy(age = value)
-                    Validator.ValidationType.WEIGHT -> currentState.metricsUiState.copy(weight = value)
-                    Validator.ValidationType.HEIGHT -> currentState.metricsUiState.copy(height = value)
-                    else -> currentState.metricsUiState
+                    Validator.ValidationType.AGE -> currentState.metricsUiState.copy(
+                        ageError = if (result is ValidationResult.Invalid) result.message else null
+                    )
+
+                    Validator.ValidationType.WEIGHT -> currentState.metricsUiState.copy(
+                        weightError = if (result is ValidationResult.Invalid) result.message else null
+                    )
+
+                    Validator.ValidationType.HEIGHT -> currentState.metricsUiState.copy(
+                        heightError = if (result is ValidationResult.Invalid) result.message else null
+                    )
+
+                    Validator.ValidationType.NAME -> currentState.metricsUiState.copy(
+                        nameError = if (result is ValidationResult.Invalid) result.message else null
+                    )
+
+                    Validator.ValidationType.WORKOUT_DAYS -> TODO()
+                    Validator.ValidationType.WORKOUT_GOAL -> TODO()
+                    Validator.ValidationType.FITNESS_LEVEL -> TODO()
+                    Validator.ValidationType.BMI -> TODO()
                 }
             )
         }
-    }
-
-    fun showPickerDialog(type: PickerType) {
-        _showPicker.value = type
-    }
-
-    fun hidePickerDialog() {
-        _showPicker.value = PickerType.NONE
     }
 
     private fun validateAllMetrics() {
@@ -128,13 +123,18 @@ class ProfileSetupViewModel @Inject constructor(private val profileService: Prof
             Validator.ValidationType.HEIGHT,
             uiState.value.metricsUiState.height
         )
+        val nameResult = validateMetric(
+            Validator.ValidationType.NAME,
+            uiState.value.metricsUiState.name
+        )
 
         _uiState.update { currentState ->
             currentState.copy(
                 metricsUiState = currentState.metricsUiState.copy(
                     ageError = if (ageResult is ValidationResult.Invalid) ageResult.message else null,
                     weightError = if (weightResult is ValidationResult.Invalid) weightResult.message else null,
-                    heightError = if (heightResult is ValidationResult.Invalid) heightResult.message else null
+                    heightError = if (heightResult is ValidationResult.Invalid) heightResult.message else null,
+                    nameError = if (nameResult is ValidationResult.Invalid) nameResult.message else null
                 )
             )
         }
@@ -142,16 +142,19 @@ class ProfileSetupViewModel @Inject constructor(private val profileService: Prof
         if (
             ageResult is ValidationResult.Valid &&
             weightResult is ValidationResult.Valid &&
-            heightResult is ValidationResult.Valid
+            heightResult is ValidationResult.Valid &&
+            nameResult is ValidationResult.Valid
         ) {
+
             _uiState.update {
                 it.copy(
                     profile = Profile(
-                        name = it.name,
+                        name = it.metricsUiState.name,
                         age = it.metricsUiState.age.toInt(),
                         weight = it.metricsUiState.weight.toFloat(),
                         height = it.metricsUiState.height.toFloat(),
-                        gender = it.gender
+                        gender = it.gender,
+                        bmi = it.metricsUiState.bmi?.toFloat() ?: 0f
                     )
                 )
             }
@@ -159,29 +162,122 @@ class ProfileSetupViewModel @Inject constructor(private val profileService: Prof
     }
 
     fun proceedToGenderStep() {
-        validateNameStep()
-        if (uiState.value.nameError == null) {
+        _uiState.update { it.copy(hasUserAttemptedSubmission = true) }
+        if (uiState.value.metricsUiState.nameError == null && uiState.value.metricsUiState.ageError == null) {
             navigateToGenderStep()
         }
     }
 
-    fun proceedToMetricsStep() {
-        if (uiState.value.gender != Gender.NONE) {
-            _uiState.update { it.copy(profileSetupStep = ProfileSetupStep.METRICS) }
+    fun proceedToGoalStep() {
+        _uiState.update { it.copy(hasUserAttemptedSubmission = true) }
+        validateAllMetrics()
+        if (uiState.value.metricsUiState.weightError == null && uiState.value.metricsUiState.heightError == null) {
+            navigateToGoalStep()
         }
     }
 
-    fun saveProfile() {
-        validateAllMetrics()
-        viewModelScope.launch {
-            uiState.value.profile.let { it ->
-                if (it != null) {
-                    profileService.saveProfile(it)
-                }
-                _uiState.update { it.copy(profileSetupStep = ProfileSetupStep.COMPLETED) }
+    fun selectedGoal(fitnessGoal: FitnessGoal) {
+        _uiState.update { it.copy(selectedFitnessGoal = fitnessGoal) }
+    }
+
+    fun navigateToGoalStep() {
+        _uiState.update {
+            it.copy(
+                profileSetupStep = ProfileSetupStep.FITNESS_GOAL,
+                currentStep = 3
+            )
+        }
+    }
+
+    fun proceedToLevelStep() {
+        _uiState.update {
+            it.copy(
+                profileSetupStep = ProfileSetupStep.FITNESS_LEVEL,
+                currentStep = 4
+            )
+        }
+        if (uiState.value.selectedFitnessGoal != null) {
+            navigateToLevelStep()
+        }
+    }
+
+    private fun navigateToLevelStep() {
+        _uiState.update {
+            it.copy(
+                profileSetupStep = ProfileSetupStep.FITNESS_LEVEL,
+                currentStep = 4
+            )
+        }
+
+    }
+
+    fun onFitnessLevelSelection(fitnessLevel: FitnessLevel) {
+        _uiState.update { it.copy(selectedFitnessLevel = fitnessLevel) }
+    }
+
+
+    fun proceedToDaySelectionStep() {
+        if (uiState.value.selectedFitnessLevel != null) {
+            _uiState.update {
+                it.copy(
+                    profileSetupStep = ProfileSetupStep.WEEKLY_SCHEDULE,
+                    currentStep = 5
+                )
             }
         }
     }
-}
 
+    fun onWeekDaySelected(day: WeekDay) {
+        val current = _uiState.value.selectedDays.toMutableList()
+        if (current.contains(day)) {
+            current.remove(day)
+        } else {
+            current.add(day)
+        }
+        _uiState.value = _uiState.value.copy(selectedDays = current)
+    }
+
+    fun backToPreviousStep() {
+        _uiState.update { current ->
+            val previousStep = when (current.profileSetupStep) {
+                ProfileSetupStep.METRICS -> ProfileSetupStep.NAME
+                ProfileSetupStep.FITNESS_GOAL -> ProfileSetupStep.METRICS
+                ProfileSetupStep.FITNESS_LEVEL -> ProfileSetupStep.FITNESS_GOAL
+                ProfileSetupStep.WEEKLY_SCHEDULE -> ProfileSetupStep.FITNESS_LEVEL
+                else -> current.profileSetupStep
+            }
+
+            val previousStepIndex = when (previousStep) {
+                ProfileSetupStep.NAME -> 1
+                ProfileSetupStep.METRICS -> 2
+                ProfileSetupStep.FITNESS_GOAL -> 3
+                ProfileSetupStep.FITNESS_LEVEL -> 4
+                ProfileSetupStep.WEEKLY_SCHEDULE -> 5
+                ProfileSetupStep.COMPLETED -> 6
+            }
+
+            current.copy(
+                profileSetupStep = previousStep,
+                currentStep = previousStepIndex
+            )
+        }
+    }
+
+    fun createProfile() {
+        val profile = Profile(
+            name = _uiState.value.metricsUiState.name,
+            age = _uiState.value.metricsUiState.age.toInt(),
+            weight = _uiState.value.metricsUiState.weight.toFloat(),
+            height = _uiState.value.metricsUiState.height.toFloat(),
+            fitnessGoal = _uiState.value.selectedFitnessGoal,
+            fitnessLevel = _uiState.value.selectedFitnessLevel,
+            workoutDays = _uiState.value.selectedDays.map { it.name},
+            gender = _uiState.value.gender,
+            bmi = _uiState.value.metricsUiState.bmi?.toFloatOrNull() ?: 0f
+        )
+        viewModelScope.launch {
+            profileService.saveProfile(profile = profile)
+        }
+    }
+}
 

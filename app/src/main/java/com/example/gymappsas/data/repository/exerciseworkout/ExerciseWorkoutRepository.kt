@@ -23,11 +23,8 @@ class ExerciseWorkoutRepository @Inject constructor(
         }
     }
 
-    suspend fun updateExerciseWorkoutWeight(exerciseWorkoutId: Long, weight: Int) {
-        exerciseWorkoutDao.setExerciseWorkoutWeightById(
-            exerciseWorkoutId = exerciseWorkoutId,
-            weight = weight
-        )
+    suspend fun updateExerciseWorkoutData(exerciseWorkout: ExerciseWorkoutEntity) {
+        exerciseWorkoutDao.updateExerciseWorkout(exerciseWorkoutEntity = exerciseWorkout)
     }
 
 }

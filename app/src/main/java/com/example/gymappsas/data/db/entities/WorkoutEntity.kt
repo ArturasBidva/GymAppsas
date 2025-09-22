@@ -8,5 +8,7 @@ data class WorkoutEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val title: String,
-    val description: String
+    val description: String,
+    val isFavourite: Boolean = false,
+    val category: String = ""
 )

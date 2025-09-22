@@ -2,6 +2,8 @@ package com.example.gymappsas.data.repository.profile
 
 import com.example.gymappsas.data.db.entities.ProfileEntity
 import com.example.gymappsas.data.db.models.profile.Profile
+import com.example.gymappsas.ui.screens.profilesetup.FitnessGoal
+import com.example.gymappsas.ui.screens.profilesetup.FitnessLevel
 import com.example.gymappsas.util.Validator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -10,7 +12,7 @@ import javax.inject.Inject
 class ProfileService @Inject constructor(private val profileRepository: ProfileRepository) {
 
     suspend fun saveProfile(profile: Profile) {
-        if(!Validator.validateProfile(profile)) {
+        if (!Validator.validateProfile(profile)) {
             throw IllegalArgumentException("Invalid profile data")
         }
         profileRepository.insertProfile(profileEntity = profile.toProfileEntity())
@@ -30,7 +32,11 @@ class ProfileService @Inject constructor(private val profileRepository: ProfileR
             weeklyTrainingMinutes = this.weeklyTrainingMinutes,
             weight = this.weight,
             height = this.height,
-            gender = this.gender
+            gender = this.gender,
+            selectedTrainingLevel = this.fitnessLevel?.displayName,
+            selectedFitnessGoal = this.fitnessGoal?.name,
+            selectedTrainingDays = this.workoutDays,
+            bmi = this.bmi
         )
     }
 
@@ -41,7 +47,15 @@ class ProfileService @Inject constructor(private val profileRepository: ProfileR
             joinDate = this.joinDate,
             weeklyTrainingMinutes = this.weeklyTrainingMinutes,
             weight = this.weight,
-            height = this.height)
+            height = this.height,
+            gender = this.gender,
+            fitnessGoal = FitnessGoal.entries.find { it.name == this.selectedFitnessGoal },
+            fitnessLevel = FitnessLevel.entries.find {
+                it.displayName.equals(this.selectedTrainingLevel?.trim(), ignoreCase = true)
+            },
+            workoutDays = this.selectedTrainingDays,
+            bmi = this.bmi
+        )
     }
 
 }

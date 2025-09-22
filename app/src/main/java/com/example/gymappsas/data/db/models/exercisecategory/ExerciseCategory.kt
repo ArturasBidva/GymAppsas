@@ -28,5 +28,20 @@ sealed class ExerciseCategory(val name: String) {
         fun getAllCategories(): List<ExerciseCategory> {
             return listOf(Biceps,Lats,Abdominals,Glutes,Quadriceps,Shoulders,Triceps,Chest)
         }
+
+        fun getCategoryEmoji(categoryName: String): String {
+            return when (categoryName.lowercase()) {
+                "biceps" -> "💪"
+                "lats" -> "🦅"
+                "abdominals" -> "🏋️‍♂️"
+                "glutes" -> "🍑"
+                "quadriceps" -> "🦵"
+                "shoulders" -> "🤸‍♂️"
+                "triceps" -> "💥"
+                "chest" -> "🏋️"
+                else -> "❓"
+            }
+        }
     }
+
 }

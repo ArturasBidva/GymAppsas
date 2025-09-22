@@ -9,12 +9,12 @@ data class ExerciseWorkoutEntity(
     @PrimaryKey(autoGenerate = true)
     val exerciseWorkoutId: Long = 0,
     val completedCount: Int = 0,
-    val weight: Int = 0,
+    val maxWeight: Float = 0F,
     val goal: Int = 0,
     val exerciseId: Long
 ) {
     override fun toString(): String {
         return "com.example.gymappsas.data.db.entities.ExerciseWorkoutEntity(exerciseWorkoutId=$exerciseWorkoutId, " +
-                "completedCount=$completedCount, weight=$weight, goal=$goal, exerciseId=$exerciseId)"
+                "completedCount=$completedCount, weight=$maxWeight, goal=$goal, exerciseId=$exerciseId)"
     }
 }

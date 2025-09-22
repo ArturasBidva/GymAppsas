@@ -9,6 +9,7 @@ object MockProfileData {
         name = "John Doe",
         age = 25,
         weight = 70F,
-        height = 175F)
+        height = 175F,
+        bmi = 25F)
 
 }

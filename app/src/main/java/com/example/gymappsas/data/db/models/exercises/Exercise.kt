@@ -8,8 +8,10 @@ data class Exercise(
     val id: Long = 0,
     val name: String,
     val images: List<String>,
+    val equipment: String,
     val instructions: List<String>,
-    val primaryMuscles: List<String>
+    val primaryMuscles: List<String>,
+    val level: String,
 
 
 ): Parcelable

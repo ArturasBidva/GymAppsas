@@ -12,7 +12,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.example.gymappsas.MainActivity
 import com.example.gymappsas.R
-import com.example.gymappsas.util.GetImagePath
 import com.example.gymappsas.util.NOTIFICATION_CHANNEL_ID
 import dagger.Module
 import dagger.Provides
@@ -21,7 +20,6 @@ import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ServiceScoped
 import java.io.IOException
-import java.io.InputStream
 
 @Module
 @InstallIn(ServiceComponent::class)
@@ -37,10 +35,7 @@ class ServiceModule {
             420,
             Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-                putExtra(
-                    "fromNotification",
-                    true
-                )
+                putExtra("fromNotification", true)
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
         )
@@ -51,43 +46,13 @@ class ServiceModule {
         @ApplicationContext context: Context,
         workoutPendingIntent: PendingIntent
     ): NotificationCompat.Builder {
-        val category = "workout.exerciseWorkouts.first().exercise.primaryMuscles.first()" // Use workout category
-        val exerciseName = "workout.title" // Use workout title (exercise name)
-        val progress = 0 // Set actual progress if available
-        val textColorPrimary = ContextCompat.getColor(context, R.color.notification_text_primary)
-        val textColorSecondary = ContextCompat.getColor(context, R.color.notification_text_secondary)
-        val accentColor = ContextCompat.getColor(context, R.color.notification_accent)
-        val imagePath = GetImagePath.getExerciseImagePath(category, exerciseName)
-        val bitmap = getBitmapFromAsset(context, imagePath)
-
-        val notificationLayout = RemoteViews(context.packageName, R.layout.notification_workout).apply {
-
-            setTextColor(R.id.exercise_title, textColorPrimary)
-            setTextColor(R.id.exercise_details, textColorSecondary)
-            setTextColor(R.id.timer_text, accentColor)
-
-            // Progress bar
-            setProgressBar(R.id.progress_bar, 100, progress, false)
-            setInt(R.id.progress_bar, "setProgressTint", accentColor)
-            bitmap?.let {
-                setImageViewBitmap(R.id.exercise_icon, it)
-            } ?: setImageViewResource(R.id.exercise_icon, R.drawable.avatar__1_)
-        }
-
         // Create notification channel (Android 8.0+)
-        val channel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID,
-            "Workout Progress",
-            NotificationManager.IMPORTANCE_HIGH
-        )
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(channel)
+        createNotificationChannel(context)
 
-        // Return the notification builder
+        // Return the notification builder with basic configuration
         return NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notifications_black_24dp)
             .setCategory(NotificationCompat.CATEGORY_WORKOUT)
-            .setCustomContentView(notificationLayout)
             .setContentIntent(workoutPendingIntent)
             .setOnlyAlertOnce(true)
             .setOngoing(true)
@@ -100,19 +65,65 @@ class ServiceModule {
     fun provideNotificationManager(@ApplicationContext context: Context) =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+    private fun createNotificationChannel(context: Context) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                "Workout Progress",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Workout progress notifications"
+                lockscreenVisibility = NotificationCompat.VISIBILITY_PUBLIC
+            }
 
-    private fun getBitmapFromAsset(context: Context, filePath: String?): Bitmap? {
-        val assetManager = context.assets
+            val notificationManager = context.getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 
-        val istr: InputStream
-        var bitmap: Bitmap? = null
-        try {
-            istr = assetManager.open(filePath!!)
-            bitmap = BitmapFactory.decodeStream(istr)
-        } catch (e: IOException) {
-            // handle exception
+    companion object {
+        fun createNotificationLayout(
+            context: Context,
+            exerciseName: String?,
+            completedCount: Int,
+            goal: Int,
+            progress: Int,
+            timeText: String,
+            stateText: String
+        ): RemoteViews {
+            val whiteColor = ContextCompat.getColor(context, R.color.white)
+            val accentColor = ContextCompat.getColor(context, R.color.notification_accent)
+
+            return RemoteViews(context.packageName, R.layout.notification_workout).apply {
+                // Set texts
+                setTextViewText(R.id.exercise_title, exerciseName ?: "Workout")
+                setTextViewText(R.id.sets_text, "$completedCount/$goal sets")
+                setTextViewText(R.id.state_text, stateText)
+                setTextViewText(R.id.timer_text, timeText)
+
+                // Set text colors
+                setTextColor(R.id.exercise_title, whiteColor)
+                setTextColor(R.id.sets_text, whiteColor)
+                setTextColor(R.id.state_text, whiteColor)
+                setTextColor(R.id.timer_text, accentColor)
+
+                // Progress bar - REMOVE THE PROBLEMATIC LINE
+                setProgressBar(R.id.progress_bar, 100, progress, false)
+                // REMOVE THIS LINE: setInt(R.id.progress_bar, "setProgressTint", accentColor)
+            }
         }
 
-        return bitmap
+
+        private fun getBitmapFromAsset(context: Context, filePath: String?): Bitmap? {
+            if (filePath.isNullOrEmpty()) return null
+
+            return try {
+                context.assets.open(filePath).use { stream ->
+                    BitmapFactory.decodeStream(stream)
+                }
+            } catch (e: IOException) {
+                null
+            }
+        }
     }
 }

@@ -10,5 +10,8 @@ data class CompletedWorkoutEntity(
     val id: Long = 0L,
     val workoutId: Long,
     val completedDate: LocalDate,
-    val workoutTitle: String
+    val workoutTitle: String,
+    val durationMinutes: Int? = null, // Workout duration in minutes
+    val maxWeight: Float? = null, // Maximum weight used in kg
+    val notes: String? = null // Optional notes about the workout
 )

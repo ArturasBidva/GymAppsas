@@ -10,6 +10,8 @@
     <color name="md_theme_onSecondaryContainer">#1E192B</color>
     <color name="md_theme_tertiary">#7E525F</color>
     <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="notification_progress_bg">#60FFFFFF</color>
     <color name="md_theme_tertiaryContainer">#FFD9E2</color>
     <color name="md_theme_onTertiaryContainer">#31101D</color>
     <color name="md_theme_error">#BA1A1A</color>
@@ -18,7 +20,7 @@
     <color name="md_theme_onErrorContainer">#410002</color>
     <color name="md_theme_background">#FEF7FF</color>
     <color name="md_theme_onBackground">#1D1B20</color>
-    <color name="md_theme_surface">#FEF7FF</color>
+    <color name="md_theme_surface">#FFFFFF</color>
     <color name="md_theme_onSurface">#1D1B20</color>
     <color name="md_theme_surfaceVariant">#E7E0EB</color>
     <color name="md_theme_onSurfaceVariant">#49454E</color>
@@ -110,7 +112,7 @@
     <color name="md_theme_onError_highContrast">#FFFFFF</color>
     <color name="md_theme_errorContainer_highContrast">#8C0009</color>
     <color name="md_theme_onErrorContainer_highContrast">#FFFFFF</color>
-    <color name="md_theme_background_highContrast">#FEF7FF</color>
+    <color name="md_theme_background_highContrast">#FFFFFF</color>
     <color name="md_theme_onBackground_highContrast">#1D1B20</color>
     <color name="md_theme_surface_highContrast">#FEF7FF</color>
     <color name="md_theme_onSurface_highContrast">#000000</color>
@@ -144,5 +146,5 @@
     <color name="notification_background">#FFFFFF</color>
     <color name="notification_text_primary">#FF000000</color>
     <color name="notification_text_secondary">#FF444444</color>
-    <color name="notification_accent">#FF018786</color>
+    <color name="notification_accent">#FF4081</color>
 </resources>

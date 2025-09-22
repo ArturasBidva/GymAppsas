@@ -12,17 +12,14 @@ class ExerciseWorkoutService @Inject constructor(
 
     }
 
-    suspend fun updateExerciseWorkoutWeight(exerciseWorkoutId: Long, weight: Int) {
-        exerciseWorkoutRepository.updateExerciseWorkoutWeight(
-            exerciseWorkoutId = exerciseWorkoutId,
-            weight = weight
-        )
+    suspend fun updateExerciseWorkoutData(exerciseWorkout: ExerciseWorkout) {
+        exerciseWorkoutRepository.updateExerciseWorkoutData(exerciseWorkout = exerciseWorkout.toExerciseWorkoutEntity())
     }
 
     private fun ExerciseWorkout.toExerciseWorkoutEntity(): ExerciseWorkoutEntity {
         return ExerciseWorkoutEntity(
             completedCount = this.completedCount,
-            weight = this.weight,
+            maxWeight = this.maxWeight,
             goal = this.goal,
             exerciseId = this.exercise.id
         )

@@ -1,6 +1,7 @@
 package com.example.gymappsas.data.db
 
 import androidx.room.TypeConverter
+import com.example.gymappsas.ui.screens.profilesetup.Gender
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
@@ -10,6 +11,7 @@ import com.google.gson.JsonParseException
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
+import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import java.time.LocalDate
 import java.time.LocalTime
@@ -107,7 +109,27 @@ class Converters {
         return date?.toString()
     }
 
+    // Gender converters
+    @TypeConverter
+    fun fromGender(gender: Gender?): String? {
+        return gender?.name
+    }
+
+    @TypeConverter
+    fun toGender(genderString: String?): Gender? {
+        return genderString?.let { Gender.valueOf(it) }
+    }
+
+    // List<String> converters
+    @TypeConverter
+    fun fromStringList(value: List<String>): String {
+        return gson.toJson(value)
+    }
+
+    @TypeConverter
+    fun toStringList(value: String): List<String> {
+        val listType = object : TypeToken<List<String>>() {}.type
+        return gson.fromJson(value, listType) ?: emptyList()
+    }
 }
-
-
 

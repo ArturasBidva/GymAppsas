@@ -12,5 +12,6 @@ data class OnGoingWorkoutUIState(
     val workoutCompleted : Boolean = false,
     val nextExercise: ExerciseWorkout? = null,
     val isPaused: Boolean = false,
-    val isTimerRunning: Boolean = false
+    val isTimerRunning: Boolean = false,
+    val isExpanded :Boolean = false
 )

@@ -7,12 +7,15 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.gymappsas.data.db.Converters
 import com.example.gymappsas.data.db.GymDatabase
+import com.example.gymappsas.data.db.dao.StepsDao
+import com.example.gymappsas.data.repository.workoutvariants.WorkoutVariantDao
 import com.example.gymappsas.data.repository.completedworkout.CompletedWorkoutDao
 import com.example.gymappsas.data.repository.exercise.ExerciseDao
 import com.example.gymappsas.data.repository.exerciseworkout.ExerciseWorkoutDao
 import com.example.gymappsas.data.repository.profile.ProfileDao
 import com.example.gymappsas.data.repository.schedule.ScheduleDao
 import com.example.gymappsas.data.repository.workout.WorkoutDao
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,14 +29,21 @@ import javax.inject.Singleton
 object RoomModule {
     @Singleton
     @Provides
+    fun provideGson(): Gson {
+        return Gson()
+    }
+
+    @Singleton
+    @Provides
     fun provideGymDatabase(
         @ApplicationContext appContext: Context
     ): GymDatabase {
         return Room.databaseBuilder(
-            appContext,
-            GymDatabase::class.java,
-            "gym.db"
-        ).addCallback(object : RoomDatabase.Callback() {
+                appContext,
+                GymDatabase::class.java,
+                "gym.db"
+            ).fallbackToDestructiveMigration(false)
+            .addCallback(object : RoomDatabase.Callback() {
             override fun onOpen(db: SupportSQLiteDatabase) {
                 super.onOpen(db)
                 db.execSQL("PRAGMA foreign_keys=ON;")
@@ -77,4 +87,15 @@ object RoomModule {
         return database.profileDao()
     }
 
+    @Singleton
+    @Provides
+    fun provideWorkoutVariantDao(database: GymDatabase): WorkoutVariantDao {
+        return database.workoutVariantDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideStepsDao(database: GymDatabase): StepsDao {
+        return database.stepsDao()
+    }
 }

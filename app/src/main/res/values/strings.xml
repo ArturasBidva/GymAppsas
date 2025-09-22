@@ -18,4 +18,22 @@
     <string name="confirm_logout">Confirm Logout</string>
     <string name="logout_prompt">Are you sure you want to log out?</string>
     <string name="cancel">Cancel</string>
+    <string name="soon">soon</string>
+    <string name="CONSTANT">You\'ll use the same weight for all sets, focusing on consistent form and effort.</string>
+    <string name="DROPSET">You\'ll start heavy and decrease weight with each set, pushing muscles to full fatigue.</string>
+    <string name="FORCE">You\'ll use a challenging weight and push beyond failure with assistance.</string>
+    <string name="PYRAMID">You\'ll increase weight with each set while decreasing reps, building up to your max effort.</string>
+    <string name="REVERSE_PYRAMID">You\'ll start with your heaviest weight and decrease with each set while increasing reps.</string>
+    <string name="rest_time_60">Short rest periods are great for endurance and fat burning workouts.</string>
+    <string name="rest_time_90">Balanced rest periods work well for most training styles.</string>
+    <string name="rest_time_120">Longer rest periods are ideal for strength training and heavy lifts.</string>
+    <string name="workout_added_to_favourites">Workout successfully added to favourites</string>
+    <string name="workout_removed_from_favourites">Workout successfully removed from favourites.</string>
+    <!-- Permissions required for Google Fit Integration -->
+    <!--
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    -->
 </resources>

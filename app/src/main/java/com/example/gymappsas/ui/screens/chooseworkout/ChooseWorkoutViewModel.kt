@@ -50,7 +50,7 @@ private val workoutService: WorkoutService
 
     fun checkIfWorkoutReadyToStart(): Boolean {
         return uiState.value.chosenWorkout?.exerciseWorkouts?.let { exercises ->
-            exercises.all { it.weight > 0 }
+            exercises.all { it.maxWeight > 0 }
         } ?: false
     }
 }
